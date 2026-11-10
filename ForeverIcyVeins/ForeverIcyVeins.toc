@@ -1,0 +1,12 @@
+## Interface: 16001
+## Title: Forever Frost Alert
+## Notes: Frost spell alert while Fingers of Frost is active. WoW Forever only.
+## Notes-deDE: Leuchtende Frostgrafik, solange Eisige Finger aktiv ist.
+## Author: 1nd1v1d
+## Version: 0.1.2
+## X-License: MIT
+## X-Website: https://github.com/1nd1v1d/Forever_Frost_Alert
+## Dependencies: Blizzard_AuraContainer
+## SavedVariablesPerCharacter: ForeverIcyVeinsDB
+
+ForeverIcyVeins.lua

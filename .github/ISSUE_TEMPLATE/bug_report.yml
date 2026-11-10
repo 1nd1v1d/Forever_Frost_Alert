@@ -1,0 +1,30 @@
+name: Bug report
+description: Report a problem with the Fingers of Frost alert on WoW Forever.
+title: "[Bug]: "
+body:
+  - type: input
+    id: client
+    attributes:
+      label: WoW Forever version and build
+      placeholder: "1.60.1 (build number)"
+    validations:
+      required: true
+  - type: textarea
+    id: status
+    attributes:
+      label: /fiv status output
+      description: Copy the status message from the affected mage.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: What happened?
+      description: Include reproduction steps, whether /fiv test works, and whether the problem occurs in combat.
+    validations:
+      required: true
+  - type: textarea
+    id: errors
+    attributes:
+      label: Lua errors or screenshots
+      description: Remove personal information before sharing screenshots or logs.
