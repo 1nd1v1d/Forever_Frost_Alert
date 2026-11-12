@@ -17,6 +17,6 @@ Charge indicators and an accelerating expiry warning for Fingers of Frost on WoW
 
 **Beta status:** the new native rendering path, charge indicators and accelerating warning need live-client verification. Automated Lua/API-contract tests do not replace in-game testing. Charges are shown by the wings, with no numeric counter or timer.
 
-This release tracks **Fingers of Frost**, not **Icy Veins**. Older local versions that used the Icy Veins buff IDs are migrated automatically.
+This release tracks the **Fingers of Frost proc and its remaining charges**. Old buff-ID overrides from the initial local version are migrated automatically.
 
 [Report an issue](https://github.com/1nd1v1d/Forever_Frost_Alert/issues) with your client build, `/fiv status` output and reproduction steps.

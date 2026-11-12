@@ -21,7 +21,7 @@ Glowing frost wings show your **Fingers of Frost** charges: one charge lights th
 - Click-through display with no additional addon dependencies.
 - English chat feedback, with German feedback on German clients.
 
-This is a single-effect alert. Charges are represented by the wings; there is no numeric counter, timer or rotation recommendation. **Icy Veins is a different spell and does not trigger this alert.**
+This addon tracks the **Fingers of Frost proc and its remaining charges**. Charges are represented by the wings; there is no numeric counter, timer or rotation recommendation.
 
 ## Compatibility and release status
 

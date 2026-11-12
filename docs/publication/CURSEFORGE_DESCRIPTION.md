@@ -33,7 +33,7 @@ The warning follows the buff's actual remaining duration. If a new proc refreshe
 
 **WoW Forever 1.60.1 only — interface 16001.**
 
-This addon is designed for a mage with Fingers of Frost. It tracks **Fingers of Frost**, not the separate **Icy Veins** cooldown. The wings indicate charges; there is no timer, numeric counter or rotation helper.
+This addon tracks the **Fingers of Frost proc and its remaining charges** on your mage. The wings indicate charges, and blinking warns you that the proc is about to expire. There is no timer, numeric counter or rotation helper.
 
 **Public beta:** the new charge display and accelerating expiry warning still need live-client verification. Please report problems with your exact client build and the output of `/fiv status`.
 
