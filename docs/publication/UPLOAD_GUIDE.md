@@ -9,7 +9,7 @@ The GitHub repository is public; creating/submitting the CurseForge project is a
 | --- | --- |
 | Name | **Forever Frost Alert** |
 | Suggested slug | `forever-frost-alert` — subject to availability |
-| Summary | Displays glowing frost arcs while Fingers of Frost is active on your mage in WoW Forever. No aura framework required. |
+| Summary | Track Fingers of Frost charges with glowing frost wings and an accelerating five-second expiry warning in WoW Forever. |
 | Logo | `assets/branding/icon.png` — original square PNG, 1254 × 1254 pixels |
 | Description | Paste `docs/publication/CURSEFORGE_DESCRIPTION.md` in Markdown mode |
 | Game | World of Warcraft |

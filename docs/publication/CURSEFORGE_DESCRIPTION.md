@@ -1,19 +1,32 @@
 # Forever Frost Alert
 
-**See your Fingers of Frost proc without building a full aura setup.**
+**Track your Fingers of Frost charges at a glance.**
 
-Forever Frost Alert shows glowing frost wings around the center of your screen while **Fingers of Frost** is active on your mage in **World of Warcraft: Forever**. One charge lights the left wing; two charges light both. When only five seconds remain, the visible wings start blinking and blink progressively faster until the buff expires or is consumed.
+Forever Frost Alert gives your mage a clear, Retail-style visual cue for **Fingers of Frost** in **World of Warcraft: Forever**. Glowing frost wings show how many charges remain, and an accelerating blink warns you when the buff is about to expire.
+
+## Charge display
+
+| Fingers of Frost charges | Visible wings |
+| --- | --- |
+| No active buff | Neither wing |
+| One charge | Left wing |
+| Two charges | Left and right wings |
+
+When you spend a charge, the right wing disappears first. The left wing stays until you spend the last charge or the buff expires.
+
+## Expiry warning
+
+The wings remain steady while more than five seconds remain. During the **last five seconds**, the visible wings begin blinking, accelerating from approximately **one to four flashes per second** as time runs out.
+
+The warning follows the buff's actual remaining duration. If a new proc refreshes the buff to more than five seconds, the wings become steady again. Consuming the buff or letting it expire clears the alert.
 
 ## What it does
 
-- Tracks Fingers of Frost on your character.
-- Shows the left wing for one charge and adds the right wing for the second charge.
-- Blinks during the last five seconds, accelerating from about 1 to 4 flashes per second.
 - Lets you adjust the size, opacity and position.
 - Saves your settings per character.
-- Includes a five-second preview, which ends when combat begins.
+- Includes a five-second preview that demonstrates two charges, one charge and the accelerating blink. The preview ends when combat begins.
 - Allows mouse clicks through the display.
-- Requires no WeakAuras, Musca Auras, SpellActivationOverlay or other separately installed addon.
+- Works as a standalone addon, with no aura framework or other separately installed addon required.
 - Provides English chat feedback and German feedback on German clients.
 
 ## Compatibility

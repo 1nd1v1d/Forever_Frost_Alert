@@ -1,9 +1,9 @@
 {
   "name": "Forever Frost Alert",
   "suggestedSlug": "forever-frost-alert",
-  "summary": "Displays glowing frost arcs while Fingers of Frost is active on your mage in WoW Forever. No aura framework required.",
+  "summary": "Track Fingers of Frost charges with glowing frost wings and an accelerating five-second expiry warning in WoW Forever.",
   "githubRepository": "https://github.com/1nd1v1d/Forever_Frost_Alert",
-  "githubDescription": "Standalone Fingers of Frost proc alert for WoW Forever, with adjustable Retail-style frost arcs and no aura-framework dependency.",
+  "githubDescription": "Fingers of Frost charge wings for WoW Forever, with adjustable placement and an accelerating five-second expiry warning.",
   "sourceUrl": "https://github.com/1nd1v1d/Forever_Frost_Alert",
   "issuesUrl": "https://github.com/1nd1v1d/Forever_Frost_Alert/issues",
   "websiteUrl": "https://github.com/1nd1v1d/Forever_Frost_Alert#readme",
