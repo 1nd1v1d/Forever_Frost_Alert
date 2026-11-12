@@ -2,12 +2,13 @@
 
 **See your Fingers of Frost proc without building a full aura setup.**
 
-Forever Frost Alert adds two glowing frost arcs around the center of your screen while **Fingers of Frost** is active on your mage in **World of Warcraft: Forever**. It uses the frost artwork already included in the game client for a familiar Retail-style alert.
+Forever Frost Alert shows glowing frost wings around the center of your screen while **Fingers of Frost** is active on your mage in **World of Warcraft: Forever**. One charge lights the left wing; two charges light both. When only five seconds remain, the visible wings start blinking and blink progressively faster until the buff expires or is consumed.
 
 ## What it does
 
 - Tracks Fingers of Frost on your character.
-- Shows both arcs while at least one charge remains; it does not show separate charge indicators.
+- Shows the left wing for one charge and adds the right wing for the second charge.
+- Blinks during the last five seconds, accelerating from about 1 to 4 flashes per second.
 - Lets you adjust the size, opacity and position.
 - Saves your settings per character.
 - Includes a five-second preview, which ends when combat begins.
@@ -19,9 +20,9 @@ Forever Frost Alert adds two glowing frost arcs around the center of your screen
 
 **WoW Forever 1.60.1 only — interface 16001.**
 
-This addon is designed for a mage with Fingers of Frost. It tracks **Fingers of Frost**, not the separate **Icy Veins** cooldown. It does not include a timer, a numeric charge display or a rotation helper.
+This addon is designed for a mage with Fingers of Frost. It tracks **Fingers of Frost**, not the separate **Icy Veins** cooldown. The wings indicate charges; there is no timer, numeric counter or rotation helper.
 
-**Initial public beta:** the visual preview has been confirmed in game. The corrected Fingers of Frost trigger still needs in-game confirmation. Please report problems with your exact client build and the output of `/fiv status`.
+**Public beta:** the new charge display and accelerating expiry warning still need live-client verification. Please report problems with your exact client build and the output of `/fiv status`.
 
 ## Getting started
 
@@ -40,7 +41,7 @@ The folder keeps its original name for compatibility. Do not rename it. Restart 
 | Command | What it does |
 | --- | --- |
 | `/fiv` | Show help |
-| `/fiv test` | Preview the effect for five seconds |
+| `/fiv test` | Preview two charges, then one, with accelerating blinking over five seconds |
 | `/fiv scale 1.2` | Change size; range 0.5–2 |
 | `/fiv alpha 0.8` | Change opacity; range 0.15–1 |
 | `/fiv pos 0 -50` | Move relative to screen center; positive X moves right, positive Y moves up |

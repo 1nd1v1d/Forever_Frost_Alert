@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.2.0 - 2026-11-12
+
+- Shows the left frost wing for the first Fingers of Frost charge and the right wing for the second.
+- Blinks the visible wings during the last five seconds, accelerating from approximately 1 to 4 flashes per second.
+- Uses native application and duration bindings, so refreshes and charge consumption follow the actual buff.
+- Updates `/fiv test` to demonstrate two charges, one charge and the accelerating expiry warning.
+- Adds regression coverage for charge consumption, expiration, refreshes, blink timing and preview cancellation.
+
+The new native rendering path is a beta and still needs live-client verification.
+
 ## 0.1.2 - 2026-11-10
 
 Initial public beta of **Forever Frost Alert**.

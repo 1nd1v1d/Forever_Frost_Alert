@@ -20,8 +20,8 @@ The GitHub repository is public; creating/submitting the CurseForge project is a
 | Source | https://github.com/1nd1v1d/Forever_Frost_Alert |
 | Issues | https://github.com/1nd1v1d/Forever_Frost_Alert/issues |
 | Website | https://github.com/1nd1v1d/Forever_Frost_Alert#readme |
-| Upload | `dist/ForeverFrostAlert-0.1.2-forever.zip` |
-| File display name | Forever Frost Alert 0.1.2 - Forever (Beta) |
+| Upload | `dist/ForeverFrostAlert-0.2.0-forever.zip` |
+| File display name | Forever Frost Alert 0.2.0 - Forever (Beta) |
 | File type | **Beta** |
 | Flavor / supported version | **Forever / 1.60.1** only |
 | Changelog | Paste `docs/publication/RELEASE_NOTES.md` |
@@ -44,14 +44,16 @@ The initial Beta deliberately does not claim full live validation. CurseForge's 
 
 ## Live checks before a stable release
 
-- Verify that `/fiv test` shows both arcs and ends after five seconds.
+- Verify that `/fiv test` starts with both wings, removes the right wing halfway through, blinks progressively faster and ends after five seconds.
 - Trigger **Fingers of Frost** in combat; check the alert appears.
-- Consume one charge, then the last charge; check the alert remains until the buff is gone.
+- Consume one charge: only the left wing should remain. Consume the last charge: neither wing should remain.
+- Let the buff reach five seconds remaining; verify that the visible wings start blinking and blink increasingly fast.
+- Refresh the buff during blinking; verify that the wings become steady again if more than five seconds remain.
 - Let the buff expire; check the alert disappears.
 - Reload with the buff active; verify the native display reconnects.
 - Verify scale, position and opacity survive relogging.
 
-The preview was confirmed in game before public preparation; the corrected proc trigger has not yet been confirmed in this chat. The logo is branding only. A real in-game screenshot of the effect would be a useful optional gallery image; label a `/fiv test` capture as a preview. No gameplay screenshot is supplied or fabricated.
+The new rendering path, charge display and expiry warning are not yet verified in the live client. The logo is branding only. A real in-game screenshot of the effect would be a useful optional gallery image; label a `/fiv test` capture as a preview. No gameplay screenshot is supplied or fabricated.
 
 ## Future releases
 

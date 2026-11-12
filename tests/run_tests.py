@@ -12,19 +12,64 @@ from lupa.lua51 import LuaRuntime
 
 SOURCE = (ROOT / "ForeverIcyVeins" / "ForeverIcyVeins.lua").read_text(encoding="utf-8")
 HARNESS = r'''
-frames, timers, messages = {}, {}, {}
+frames, timers, messages, bindings = {}, {}, {}, {}
+now = 100
 combat, playerClass, nativeAvailable, locale = false, "MAGE", true, "deDE"
 SlashCmdList = {}
 function print(message) table.insert(messages, message) end
 function UnitClass() return "Mage", playerClass end
 function GetLocale() return locale end
 function InCombatLockdown() return combat end
+function GetTime() return now end
 function UnitAura() error("Legacy aura queries must not be used") end
 function UnitBuff() error("Legacy buff queries must not be used") end
 function CombatLogGetCurrentEventInfo() error("Combat log must not be used") end
 C_Timer = { After = function(seconds, callback)
     table.insert(timers, { seconds = seconds, callback = callback })
 end }
+
+C_StringUtil = { CreateNumericRuleFormatter = function()
+    return {
+        rules = {},
+        AddBreakpoint = function(self, rule) table.insert(self.rules, rule) end,
+        FormatNumber = function(self, remaining)
+            local selected, threshold = "", -math.huge
+            for _, rule in ipairs(self.rules) do
+                if remaining >= rule.threshold and rule.threshold >= threshold then
+                    selected, threshold = rule.format, rule.threshold
+                end
+            end
+            return selected
+        end,
+    }
+end }
+local bindingMethods = {}
+function bindingMethods:SetFormatter(formatter) self.formatter = formatter end
+function bindingMethods:SetExpiredText(text) self.expired = text end
+function bindingMethods:SetZeroDurationText(text) self.zero = text end
+function bindingMethods:SetUpdateInterval(interval) self.interval = interval end
+function bindingMethods:SetFontString(font) self.font = font end
+function bindingMethods:SetDuration(duration) self.duration = duration end
+function bindingMethods:Enable() self.enabled = true end
+function bindingMethods:Disable() self.enabled = false end
+function bindingMethods:Copy()
+    local copy = setmetatable({}, { __index = bindingMethods })
+    for key, value in pairs(self) do copy[key] = value end
+    table.insert(bindings, copy)
+    return copy
+end
+C_DurationUtil = {
+    CreateDurationTextBinding = function()
+        local binding = setmetatable({}, { __index = bindingMethods })
+        table.insert(bindings, binding)
+        return binding
+    end,
+    CreateDuration = function()
+        return { SetTimeFromStart = function(self, start, duration)
+            self.start, self.duration = start, duration
+        end }
+    end,
+}
 
 local methods = {}
 local function write(self, key, ...)
@@ -42,6 +87,9 @@ function methods:EnableMouse(...) write(self, "mouse", ...) end
 function methods:SetTexture(...) write(self, "texture", ...) end
 function methods:SetTexCoord(...) write(self, "texcoord", ...) end
 function methods:SetBlendMode(...) write(self, "blend", ...) end
+function methods:SetWordWrap(...) write(self, "wordWrap", ...) end
+function methods:SetJustifyH(...) write(self, "justifyH", ...) end
+function methods:SetJustifyV(...) write(self, "justifyV", ...) end
 function methods:Show() write(self, "shown", true) end
 function methods:Hide() write(self, "shown", false) end
 function methods:CreateTexture(_, layer)
@@ -49,6 +97,22 @@ function methods:CreateTexture(_, layer)
     local texture = setmetatable({ layer = layer }, { __index = methods })
     table.insert(self.textures, texture)
     return texture
+end
+function methods:CreateFontString(_, layer, template)
+    assert(not self.restricted)
+    assert(template == "GameFontNormal")
+    local font = setmetatable({ parent = self, layer = layer }, { __index = methods })
+    table.insert(self.fontStrings, font)
+    return font
+end
+function methods:SetApplicationBar(bar, options)
+    assert(not self.restricted and bar.kind == "StatusBar" and bar.parent == self)
+    self.applicationBar, self.applicationOptions = bar, options
+end
+function methods:SetDurationText(font, options)
+    assert(not self.restricted and font.parent.parent == self)
+    self.durationBinding = options.binding:Copy()
+    self.durationBinding:SetFontString(font)
 end
 function methods:RegisterEvent(event) self.events[event] = true end
 function methods:UnregisterEvent(event) self.events[event] = nil end
@@ -70,22 +134,27 @@ end
 function methods:AddAuraSlot(key, filter, options)
     assert(self.kind == "AuraContainer")
     assert(filter == "HELPFUL", "Only helpful buffs are permitted")
-    assert(not self.slot, "Only one effect slot is needed")
+    self.slots = self.slots or {}
+    assert(not self.slots[key], "Slot keys must be unique")
     validateFilters(options.candidateFilters)
     local button = CreateFrame("AuraButton", nil, self, "CustomAuraButtonTemplate")
     options.initializeFrame(button)
     assert(button.mouse[1] == false, "Must allow clicks through")
-    assert(#button.textures == 2, "Both sides must share the native button")
+    assert(button.applicationBar and button.durationBinding, "Native charge and duration bindings are required")
     button.restricted = true
+    button.applicationBar.restricted = true
+    button.durationBinding.font.restricted = true
+    self.slots[key] = { button = button, filters = options.candidateFilters }
     self.slot, self.filters, self.button = key, options.candidateFilters, button
     nativeContainer = self
     return button
 end
 function methods:SetAuraSlotCandidateFilters(key, filters)
     assert(not combat, "Changing filters during combat")
-    assert(key == self.slot)
+    assert(self.slots[key])
     validateFilters(filters)
     self.filters = filters
+    self.slots[key].filters = filters
 end
 function CreateFrame(kind, name, parent, template)
     if kind == "AuraContainer" then
@@ -94,7 +163,7 @@ function CreateFrame(kind, name, parent, template)
     end
     local frame = setmetatable({
         kind = kind, name = name, parent = parent, template = template,
-        textures = {}, events = {}, shown = {true},
+        textures = {}, fontStrings = {}, events = {}, shown = {true},
     }, { __index = methods })
     table.insert(frames, frame)
     if name then _G[name] = frame end
@@ -110,6 +179,19 @@ function Fire(event, ...)
 end
 function RunTimer(index) timers[index].callback() end
 function Command(message) SlashCmdList.FOREVERICYVEINS(message) end
+function NativeAura(applications, remaining)
+    for _, slot in pairs(nativeContainer.slots) do
+        local button = slot.button
+        button.shown = { applications > 0 and remaining > 0 }
+        button.applicationBar.shown = { applications >= button.applicationOptions.minApplications }
+        local binding = button.durationBinding
+        binding.font.text = remaining > 0 and binding.formatter:FormatNumber(remaining) or binding.expired
+    end
+end
+function WingVisible(key)
+    local button = nativeContainer.slots[key].button
+    return button.shown[1] and button.applicationBar.shown[1] and button.durationBinding.font.text ~= ""
+end
 '''
 
 
@@ -136,11 +218,15 @@ class AddonTests(unittest.TestCase):
             local count = 0
             for _ in pairs(nativeContainer.filters.includeSpellIDs) do count = count + 1 end
             assert(count == 1, "Only Fingers of Frost should trigger the effect")
-            local left, right = unpack(nativeContainer.button.textures)
-            assert(left.texture[1] == 449489 and right.texture[1] == 449489)
-            assert(left.point[4] == -right.point[4])
-            assert(right.texcoord[1] == 1 and right.texcoord[2] == 0)
-            assert(left.blend[1] == "ADD" and right.blend[1] == "ADD")
+            local left = nativeContainer.slots.FingersOfFrostLeft.button
+            local right = nativeContainer.slots.FingersOfFrostRight.button
+            assert(left.applicationOptions.minApplications == 1)
+            assert(right.applicationOptions.minApplications == 2)
+            local lf, rf = left.durationBinding.font, right.durationBinding.font
+            assert(lf.point[4] == -rf.point[4])
+            assert(left.durationBinding.formatter:FormatNumber(10):find("128:256:0:128:0:256", 1, true))
+            assert(right.durationBinding.formatter:FormatNumber(10):find("128:256:128:0:0:256", 1, true))
+            assert(left.durationBinding.interval == 0.02 and right.durationBinding.interval == 0.02)
             assert(not ForeverIcyVeinsFrame.mouse[1])
         ''')
 
@@ -148,21 +234,30 @@ class AddonTests(unittest.TestCase):
         lua = client()
         lua.execute('''
             Command("test")
-            assert(timers[1].seconds == 5)
+            assert(timers[1].seconds == 2.5 and timers[2].seconds == 5)
             assert(not nativeContainer.shown[1])
-            assert(frames[#frames].shown[1])
+            local preview = frames[#frames].parent
+            assert(preview.shown[1])
             RunTimer(1)
+            assert(not preview.wings[1].shown[1] and preview.wings[-1].shown[1])
+            assert(not nativeContainer.shown[1])
+            RunTimer(2)
             assert(nativeContainer.shown[1])
-            assert(not frames[#frames].shown[1])
+            assert(not preview.shown[1])
+            assert(not preview.bindings[-1].enabled and not preview.bindings[1].enabled)
         ''')
 
     def test_preview_restarts_without_stale_timeout(self):
         lua = client()
         lua.execute('''
             Command("test"); Command("test")
-            RunTimer(1)
+            local preview = frames[#frames].parent
+            RunTimer(1); RunTimer(2)
             assert(not nativeContainer.shown[1])
-            RunTimer(2)
+            assert(preview.wings[1].shown[1])
+            RunTimer(3)
+            assert(not preview.wings[1].shown[1])
+            RunTimer(4)
             assert(nativeContainer.shown[1])
         ''')
 
@@ -172,14 +267,58 @@ class AddonTests(unittest.TestCase):
             Command("test")
             combat = true; Fire("PLAYER_REGEN_DISABLED")
             assert(nativeContainer.shown[1])
-            assert(not frames[#frames].shown[1])
+            local preview = frames[#frames].parent
+            assert(not preview.shown[1])
             Command("scale 2"); Command("spell 400670"); Command("test")
             assert(ForeverIcyVeinsDB.scale == 1)
             assert(ForeverIcyVeinsDB.spellID == nil)
-            assert(#timers == 1)
+            assert(#timers == 2)
             Command("status")
-            RunTimer(1)
+            RunTimer(1); RunTimer(2)
             assert(nativeContainer.shown[1])
+        ''')
+
+    def test_charges_consumption_expiry_and_refresh(self):
+        lua = client()
+        lua.execute('''
+            local left, right = "FingersOfFrostLeft", "FingersOfFrostRight"
+            NativeAura(0, 0)
+            assert(not WingVisible(left) and not WingVisible(right))
+            NativeAura(2, 15)
+            assert(WingVisible(left) and WingVisible(right))
+            NativeAura(1, 8)
+            assert(WingVisible(left) and not WingVisible(right))
+            NativeAura(0, 8)
+            assert(not WingVisible(left) and not WingVisible(right))
+            NativeAura(2, 0)
+            assert(not WingVisible(left) and not WingVisible(right))
+            NativeAura(2, 4.5)
+            assert(not WingVisible(left) and not WingVisible(right))
+            NativeAura(2, 15)
+            assert(WingVisible(left) and WingVisible(right), "Refresh must restore steady wings")
+        ''')
+
+    def test_native_blink_schedule_accelerates_only_in_last_five_seconds(self):
+        lua = client()
+        lua.execute('''
+            local formatter = nativeContainer.slots.FingersOfFrostLeft.button.durationBinding.formatter
+            assert(formatter:FormatNumber(15) ~= "")
+            assert(formatter:FormatNumber(5.01) ~= "")
+            assert(formatter:FormatNumber(5) ~= "")
+            assert(formatter:FormatNumber(4.9) ~= "")
+            assert(formatter:FormatNumber(4.5) == "")
+            local previous, previousBoundary, previousGap, changes = true, 5, nil, 0
+            for tick = 1, 4999 do
+                local remaining = 5 - tick / 1000
+                local visible = formatter:FormatNumber(remaining) ~= ""
+                if visible ~= previous then
+                    local gap = previousBoundary - remaining
+                    if previousGap then assert(gap <= previousGap + 0.002) end
+                    previousGap, previousBoundary, previous = gap, remaining, visible
+                    changes = changes + 1
+                end
+            end
+            assert(changes == 24)
         ''')
 
     def test_persisted_settings_apply_again_on_reload(self):

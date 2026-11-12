@@ -6,13 +6,13 @@ end
 
 -- Blizzard's built-in Frozen Fingers art; no external textures or libraries.
 local FROST_TEXTURE = 449489
-local SLOT = "FingersOfFrost"
+local SLOTS = { [-1] = "FingersOfFrostLeft", [1] = "FingersOfFrostRight" }
 local DEFAULTS = { scale = 1, alpha = 0.9, x = 0, y = 0 }
 -- The proc aura, not the talent or the separate Icy Veins haste cooldown.
 local DEFAULT_SPELLS = { [400670] = true }
-local VERSION = "0.1.2"
+local VERSION = "0.2.0"
 local L = GetLocale() == "deDE" and {
-    preview = "Vorschau fuer 5 Sekunden.",
+    preview = "5 Sekunden Vorschau: zwei Aufladungen, dann eine; zunehmend schnelleres Blinken.",
     spellHelp = "Bei abweichender Buff-ID: /fiv spell ID; Standard wiederherstellen: /fiv spell auto",
     status = "Version %s; Eisige Finger; Skalierung %.2f; Deckkraft %.2f; Position %.0f / %.0f; Buff-ID %s.",
     combat = "Vorschau und Einstellungen sind ausserhalb des Kampfes verfuegbar.",
@@ -21,7 +21,7 @@ local L = GetLocale() == "deDE" and {
     saved = "Gespeichert. Mit /fiv test ansehen.",
     failed = "Die Forever-Auraanzeige konnte nicht gestartet werden: ",
 } or {
-    preview = "Showing a preview for 5 seconds.",
+    preview = "Showing a preview for 5 seconds: two charges, then one, with accelerating blinking.",
     spellHelp = "Override the buff ID: /fiv spell ID; restore the default: /fiv spell auto",
     status = "Version %s; Fingers of Frost; Scale %.2f; Opacity %.2f; Position %.0f / %.0f; Buff ID %s.",
     combat = "Preview and settings are available outside combat.",
@@ -53,19 +53,49 @@ local function SpellFilters()
     return { includeSpellIDs = spells }
 end
 
-local function DrawFrost(parent)
-    -- Both sides belong to the same native AuraButton, so they disappear
-    -- together when Blizzard removes the buff, including dispels and death.
+local function UpdateSpellFilters()
     for _, side in ipairs({ -1, 1 }) do
-        local texture = parent:CreateTexture(nil, "ARTWORK")
-        texture:SetTexture(FROST_TEXTURE)
-        texture:SetSize(128, 256)
-        texture:SetPoint("CENTER", parent, "CENTER", side * 145, 0)
-        texture:SetBlendMode("ADD")
-        if side == 1 then
-            texture:SetTexCoord(1, 0, 0, 1)
-        end
+        container:SetAuraSlotCandidateFilters(SLOTS[side], SpellFilters())
     end
+end
+
+local function BlinkFormatter(art)
+    local formatter = C_StringUtil.CreateNumericRuleFormatter()
+    -- Preconfigure a display rule for every half-cycle. Blizzard evaluates
+    -- these against the real remaining duration; Lua never reads secret time.
+    -- Frequency rises continuously from 1 Hz at 5 seconds to 4 Hz at expiry:
+    -- phase(t) = t + 0.3*t*t, with t = seconds since the warning began.
+    for halfCycle = 25, 1, -1 do
+        local elapsed = (math.sqrt(1 + 0.6 * halfCycle) - 1) / 0.6
+        formatter:AddBreakpoint({
+            threshold = math.max(0, 5 - elapsed),
+            format = (halfCycle - 1) % 2 == 0 and art or "",
+        })
+    end
+    formatter:AddBreakpoint({ threshold = 5, format = art })
+    return formatter
+end
+
+local function CreateWing(parent, side)
+    -- Inline artwork lets a native duration text binding render or clear the
+    -- wing using the formatter, without comparing hidden aura data in Lua.
+    local left, right = 0, 128
+    if side == 1 then
+        left, right = 128, 0
+    end
+    local art = string.format("|T%d:256:128:0:0:128:256:%d:%d:0:256|t", FROST_TEXTURE, left, right)
+    local wing = parent:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+    wing:SetSize(512, 300)
+    wing:SetPoint("CENTER", parent, "CENTER", side * 145, 0)
+    wing:SetWordWrap(false)
+    wing:SetJustifyH("CENTER")
+    wing:SetJustifyV("MIDDLE")
+    local binding = C_DurationUtil.CreateDurationTextBinding()
+    binding:SetFormatter(BlinkFormatter(art))
+    binding:SetExpiredText("")
+    binding:SetZeroDurationText("")
+    binding:SetUpdateInterval(0.02)
+    return wing, binding
 end
 
 local function ApplySettings()
@@ -79,6 +109,9 @@ local function StopPreview()
     previewGeneration = previewGeneration + 1
     if preview then
         preview:Hide()
+        for _, binding in pairs(preview.bindings) do
+            binding:Disable()
+        end
     end
     if container then
         container:Show()
@@ -90,13 +123,33 @@ local function ShowPreview()
         preview = CreateFrame("Frame", nil, root)
         preview:SetAllPoints(root)
         preview:EnableMouse(false)
-        DrawFrost(preview)
+        preview.wings, preview.bindings = {}, {}
+        for _, side in ipairs({ -1, 1 }) do
+            local holder = CreateFrame("Frame", nil, preview)
+            holder:SetAllPoints(preview)
+            holder:EnableMouse(false)
+            local wing, binding = CreateWing(holder, side)
+            binding:SetFontString(wing)
+            preview.wings[side], preview.bindings[side] = holder, binding
+        end
     end
     -- A separate, ordinary frame: never fake a buff on the native AuraButton.
     StopPreview()
     container:Hide()
+    local duration = C_DurationUtil.CreateDuration()
+    duration:SetTimeFromStart(GetTime(), 5)
+    for _, side in ipairs({ -1, 1 }) do
+        preview.wings[side]:Show()
+        preview.bindings[side]:SetDuration(duration)
+        preview.bindings[side]:Enable()
+    end
     preview:Show()
     local generation = previewGeneration
+    C_Timer.After(2.5, function()
+        if generation == previewGeneration then
+            preview.wings[1]:Hide()
+        end
+    end)
     C_Timer.After(5, function()
         if generation == previewGeneration then
             StopPreview()
@@ -135,7 +188,7 @@ local function Command(message)
             settings[key] = value
         end
         settings.spellID = nil
-        container:SetAuraSlotCandidateFilters(SLOT, SpellFilters())
+        UpdateSpellFilters()
     elseif command == "scale" or command == "alpha" then
         local minimum, maximum = 0.5, 2
         if command == "alpha" then
@@ -166,7 +219,7 @@ local function Command(message)
             Say(L.spell)
             return
         end
-        container:SetAuraSlotCandidateFilters(SLOT, SpellFilters())
+        UpdateSpellFilters()
     else
         Help()
         return
@@ -213,15 +266,25 @@ events:SetScript("OnEvent", function(self, event, loadedAddon)
         local native = CreateFrame("AuraContainer", nil, root, "CustomAuraContainerTemplate")
         native:SetAllPoints(root)
         native:EnableMouse(false)
-        native:AddAuraSlot(SLOT, "HELPFUL", {
-            candidateFilters = SpellFilters(),
-            initializeFrame = function(button)
-                button:SetSize(512, 256)
-                button:SetPoint("CENTER", native, "CENTER")
-                button:EnableMouse(false)
-                DrawFrost(button)
-            end,
-        })
+        for _, side in ipairs({ -1, 1 }) do
+            native:AddAuraSlot(SLOTS[side], "HELPFUL", {
+                candidateFilters = SpellFilters(),
+                initializeFrame = function(button)
+                    button:SetSize(512, 256)
+                    button:SetPoint("CENTER", native, "CENTER")
+                    button:EnableMouse(false)
+                    local charges = CreateFrame("StatusBar", nil, button)
+                    charges:SetAllPoints(button)
+                    charges:EnableMouse(false)
+                    local wing, binding = CreateWing(charges, side)
+                    button:SetApplicationBar(charges, {
+                        minApplications = side == -1 and 1 or 2,
+                        maxApplications = 2,
+                    })
+                    button:SetDurationText(wing, { binding = binding })
+                end,
+            })
+        end
         native:SetUnit("player")
         return native
     end)

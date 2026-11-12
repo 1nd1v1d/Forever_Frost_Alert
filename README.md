@@ -6,31 +6,32 @@
 
 **A focused Fingers of Frost proc alert for World of Warcraft: Forever.**
 
-Two glowing, mirrored frost arcs frame the center of your screen while **Fingers of Frost** is active on your mage. The addon uses Blizzard's built-in frost artwork and native aura display to provide a familiar Retail-style visual cue.
+Glowing frost wings show your **Fingers of Frost** charges: one charge lights the left wing, and two charges light both wings. During the last five seconds, the visible wings blink progressively faster as the buff approaches expiry.
 
 [Download the addon](https://github.com/1nd1v1d/Forever_Frost_Alert/releases) · [Report an issue](https://github.com/1nd1v1d/Forever_Frost_Alert/issues) · [Changelog](CHANGELOG.md)
 
 ## Features
 
 - Tracks the **Fingers of Frost** buff, spell ID **400670**.
-- Shows both frost arcs while the proc is active, including when one charge remains.
+- Shows the left wing for one charge and adds the right wing for the second charge.
+- Starts blinking at five seconds remaining, accelerating from about 1 to 4 flashes per second.
 - Uses a native Blizzard aura container to control visibility.
 - Adjustable scale, opacity and position, saved per character.
 - Five-second preview that ends automatically when combat starts.
 - Click-through display with no additional addon dependencies.
 - English chat feedback, with German feedback on German clients.
 
-This is a single-effect alert. It does not display a charge count, a timer or a rotation recommendation. **Icy Veins is a different spell and does not trigger this alert.**
+This is a single-effect alert. Charges are represented by the wings; there is no numeric counter, timer or rotation recommendation. **Icy Veins is a different spell and does not trigger this alert.**
 
 ## Compatibility and release status
 
 Built for **WoW Forever 1.60.1**, interface **16001**. Retail, Classic Era, TBC and MoP clients are not supported.
 
-**Initial public beta:** the visual preview has been confirmed in game. The corrected Fingers of Frost trigger still needs in-game confirmation; automated tests validate Lua behavior and the API configuration but do not replace a live-client test. Please report any issue with the exact client build and `/fiv status` output.
+**Public beta:** the new charge display and accelerating expiry warning still need live-client verification. Automated tests validate Lua behavior, blink timing and the native API configuration but do not replace an in-game test. Please report any issue with the exact client build and `/fiv status` output.
 
 ## Installation
 
-1. Download `ForeverFrostAlert-0.1.2-forever.zip` from [Releases](https://github.com/1nd1v1d/Forever_Frost_Alert/releases).
+1. Download `ForeverFrostAlert-0.2.0-forever.zip` from [Releases](https://github.com/1nd1v1d/Forever_Frost_Alert/releases).
 2. Extract the **ForeverIcyVeins** folder into `World of Warcraft/_forever_/Interface/AddOns/`.
 3. Check that `AddOns/ForeverIcyVeins/ForeverIcyVeins.toc` exists.
 4. Restart WoW if the new addon folder is not detected. Enable **Forever Frost Alert** in the addon list.
@@ -43,7 +44,7 @@ The folder keeps its original internal name for compatibility with earlier versi
 | Command | Purpose |
 | --- | --- |
 | `/fiv` | Show command help |
-| `/fiv test` | Preview both frost arcs for five seconds |
+| `/fiv test` | Preview blinking for five seconds, starting with two charges and then showing one |
 | `/fiv scale 1.2` | Set scale, from 0.5 to 2; default 1 |
 | `/fiv alpha 0.8` | Set opacity, from 0.15 to 1; default 0.9 |
 | `/fiv pos 0 -50` | Move the alert relative to screen center; positive X is right, positive Y is up |
@@ -64,7 +65,7 @@ Preview and setting changes are available outside combat. `/fiv status` can also
 
 ## Development
 
-The addon has no third-party runtime libraries. It follows the player's helpful aura through a native `CustomAuraContainer` slot, with both textures parented to the same native `AuraButton`. There is no addon-side aura polling, combat-log trigger or estimated buff timer.
+The addon has no third-party runtime libraries. Two native `CustomAuraContainer` slots follow the same helpful player aura. Native application bars gate the wings at one and two charges. Native duration text bindings render the built-in frost artwork through static numeric-format rules: steady above five seconds, then increasingly short on/off intervals. Blizzard evaluates the real buff time and charges; Lua never reads or compares secret aura values. There is no addon-side aura polling, combat-log trigger or estimated buff timer.
 
 Use Python 3.11+ and the test-only dependency in `requirements-dev.txt`:
 
