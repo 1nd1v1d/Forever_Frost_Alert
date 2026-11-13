@@ -2,7 +2,7 @@
 
 **Track your Fingers of Frost charges at a glance.**
 
-Forever Frost Alert gives your mage a clear, Retail-style visual cue for **Fingers of Frost** in **World of Warcraft: Forever**. Glowing frost wings show how many charges remain. Use the settings menu to adjust their transparency, size and position, and choose whether to enable the accelerating expiry blink.
+Forever Frost Alert gives your mage a clear, Retail-style visual cue for **Fingers of Frost** in **World of Warcraft: Forever**. Glowing frost wings show how many charges remain. Open **`/fiv`** to adjust transparency, size and position, and choose whether the wings blink before the buff expires.
 
 ## Charge display
 
@@ -33,14 +33,24 @@ Type **`/fiv`** or **`/fiv options`** outside combat to open the movable setting
 
 Changes are saved immediately per character. The menu closes when combat starts. Existing layout settings are preserved on update; blinking remains enabled by default until you turn it off.
 
+## Automatic language selection
+
+The settings menu and chat messages automatically follow your **WoW client's language**:
+
+- **German** on German clients (`deDE`).
+- **English** on English clients (`enUS` / `enGB`).
+- **English fallback** for other client languages.
+
+No language setting is needed in the addon. The slash commands remain the same in every language.
+
 ## What it does
 
 - Includes an in-game menu for blinking, transparency, size and position.
 - Saves your settings per character.
-- Includes a five-second preview that demonstrates two charges, one charge and the accelerating blink. The preview ends when combat begins.
+- Includes a five-second preview that demonstrates two charges, then one, using your current display and blink settings. The preview ends when combat begins.
 - Allows mouse clicks through the display.
 - Works as a standalone addon, with no aura framework or other separately installed addon required.
-- Provides English chat feedback and German feedback on German clients.
+- Automatically uses German or English for the menu and chat messages, based on the client language.
 
 ## Compatibility
 
