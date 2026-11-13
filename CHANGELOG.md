@@ -1,5 +1,14 @@
 # Changelog
 
+All project-specific source code was generated exclusively by AI, following the maintainer's instructions.
+
+## 0.3.1 - 2026-11-13
+
+- Adds explicit AI-code provenance to public descriptions, release notes and the English/German addon-list descriptions.
+- Includes the AI disclosure in the packaged NOTICE file and documents the scope of the EU AI Act assessment.
+- Documents automatic German/English language selection with English fallback.
+- Changes release metadata and provenance notices; gameplay behavior is unchanged from 0.3.0.
+
 ## 0.3.0 - 2026-11-13
 
 - Adds a small, movable settings window opened with `/fiv` or `/fiv options`.

@@ -1,6 +1,13 @@
 Forever Frost Alert is an independent World of Warcraft addon.
 It is not affiliated with or endorsed by Blizzard Entertainment.
 
+AI disclosure: All project-specific source code was generated exclusively by
+AI, following the maintainer's instructions. Documentation and the original
+project icon were also AI-generated. This provenance statement does not apply
+to Blizzard client code, game assets, external development tools or their
+dependencies. The addon itself does not run an AI model or call an AI service.
+This disclosure is not an EU AI Act conformity certification.
+
 World of Warcraft and Blizzard game assets belong to their respective owners.
 The in-game effect references the Frozen Fingers texture already present in
 the player's game client (FileDataID 449489). No Blizzard artwork is bundled

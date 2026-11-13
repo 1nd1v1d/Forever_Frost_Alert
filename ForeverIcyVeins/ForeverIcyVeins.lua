@@ -10,7 +10,7 @@ local SLOTS = { [-1] = "FingersOfFrostLeft", [1] = "FingersOfFrostRight" }
 local DEFAULTS = { scale = 1, alpha = 0.9, x = 0, y = 0, blink = true }
 -- The proc aura, not the talent or the separate Icy Veins haste cooldown.
 local DEFAULT_SPELLS = { [400670] = true }
-local VERSION = "0.3.0"
+local VERSION = "0.3.1"
 local L = GetLocale() == "deDE" and {
     preview = "5 Sekunden Vorschau: zwei Aufladungen, dann eine; mit deinen Anzeige-Einstellungen.",
     spellHelp = "Bei abweichender Buff-ID: /fiv spell ID; Standard wiederherstellen: /fiv spell auto",

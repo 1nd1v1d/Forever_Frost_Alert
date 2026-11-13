@@ -1,5 +1,7 @@
 # CurseForge-Upload einrichten
 
+Der projektspezifische Quellcode wurde ausschließlich durch KI nach den Vorgaben des Maintainers generiert. Die [Transparenzdokumentation](AI_TRANSPARENCY.md) hält Herkunft und rechtliche Einordnung fest. Dieser Hinweis gehört auch in künftige öffentliche Projekt- und Release-Beschreibungen.
+
 Der GitHub-Workflow **Publish to CurseForge** baut und testet die Version eines veröffentlichten GitHub-Releases und lädt das Addon anschließend zu [Forever Frost Alert auf CurseForge](https://www.curseforge.com/wow/addons/forever-frost-alert) hoch. Projekt-ID und WoW-Version sind bereits hinterlegt: **1796931**, **Forever 1.60.1**.
 
 Du musst einmalig deinen persönlichen **CurseForge-Autoren-API-Token** als GitHub-Secret speichern. Ein Schlüssel für die separate CurseForge Core API ist hierfür nicht geeignet.

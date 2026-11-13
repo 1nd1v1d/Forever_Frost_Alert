@@ -1,4 +1,8 @@
-# Forever Frost Alert 0.3.0 — Beta
+# Forever Frost Alert 0.3.1 — Beta
+
+**AI disclosure: All project-specific source code was generated exclusively by AI, following the maintainer's instructions.** Documentation and the project icon were also AI-generated. The addon itself does not run an AI model.
+
+This update adds the AI-code provenance notice to the addon-list descriptions and packaged notices. It also makes the automatic German/English language selection explicit in the documentation. Gameplay behavior is unchanged from 0.3.0.
 
 A settings menu and an optional expiry blink for Fingers of Frost on WoW Forever.
 
@@ -15,13 +19,13 @@ A settings menu and an optional expiry blink for Fingers of Frost on WoW Forever
 - Native bindings follow the actual remaining duration and charges, including refreshes and consumption.
 - Adjustable scale, opacity and position, saved per character.
 - Five-second preview with `/fiv test` demonstrates both charges, consumption of one charge and your chosen blink setting. It ends on entering combat.
-- English chat messages with German messages on German clients.
+- Menu and chat messages follow the WoW client language: German or English, with English fallback for other languages.
 - No separately installed addon dependencies.
 - Includes the MIT license and asset notices.
 
 **Compatibility:** WoW Forever 1.60.1, interface 16001. Extract the `ForeverIcyVeins` folder into `_forever_/Interface/AddOns/` and enable **Forever Frost Alert**. Updating an existing installation preserves its settings; use `/reload` after updating.
 
-**Download:** `ForeverFrostAlert-0.3.0-forever.zip` is the installable addon. The `.sha256` file is its checksum. GitHub's automatic source archives are for development.
+**Download:** `ForeverFrostAlert-0.3.1-forever.zip` is the installable addon. The `.sha256` file is its checksum. GitHub's automatic source archives are for development.
 
 **Beta status:** the menu and native binding changes need live-client verification. Automated Lua/API-contract tests do not replace in-game testing. Charges are shown by the wings, with no numeric counter or timer.
 

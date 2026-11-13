@@ -1,6 +1,7 @@
 # CurseForge upload guide
 
 All project copy is in English. The current addon version is a **Beta**.
+All project-specific source code was generated exclusively by AI, following the maintainer's instructions. Keep this disclosure in every public description and release announcement. See [AI transparency and scope](AI_TRANSPARENCY.md).
 The GitHub repository and CurseForge project are public. GitHub release uploads can be automated after adding the author token; see the [API setup instructions in German](CURSEFORGE_API_SETUP_DE.md).
 
 ## Files to use
@@ -9,7 +10,7 @@ The GitHub repository and CurseForge project are public. GitHub release uploads 
 | --- | --- |
 | Name | **Forever Frost Alert** |
 | Suggested slug | `forever-frost-alert` — subject to availability |
-| Summary | Fingers of Frost charge wings for WoW Forever, with optional blinking and a settings menu for transparency, size and position. |
+| Summary | Code generated exclusively by AI. Fingers of Frost charge wings for WoW Forever, with optional blinking and settings for transparency, size and position. |
 | Logo | `assets/branding/icon.png` — original square PNG, 1254 × 1254 pixels |
 | Description | Paste `docs/publication/CURSEFORGE_DESCRIPTION.md` in Markdown mode |
 | Game | World of Warcraft |
@@ -20,8 +21,8 @@ The GitHub repository and CurseForge project are public. GitHub release uploads 
 | Source | https://github.com/1nd1v1d/Forever_Frost_Alert |
 | Issues | https://github.com/1nd1v1d/Forever_Frost_Alert/issues |
 | Website | https://github.com/1nd1v1d/Forever_Frost_Alert#readme |
-| Upload | `dist/ForeverFrostAlert-0.3.0-forever.zip` |
-| File display name | Forever Frost Alert 0.3.0 - Forever (Beta) |
+| Upload | `dist/ForeverFrostAlert-0.3.1-forever.zip` |
+| File display name | Forever Frost Alert 0.3.1 - Forever (Beta) |
 | File type | **Beta** |
 | Flavor / supported version | **Forever / 1.60.1** only |
 | Changelog | Paste `docs/publication/RELEASE_NOTES.md` |

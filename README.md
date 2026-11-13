@@ -6,6 +6,8 @@
 
 **A focused Fingers of Frost proc alert for World of Warcraft: Forever.**
 
+**AI disclosure: All project-specific source code was generated exclusively by AI, following the maintainer's instructions.** Documentation and the project icon were also AI-generated. The addon itself does not run an AI model. See [AI transparency and scope](docs/publication/AI_TRANSPARENCY.md).
+
 Glowing frost wings show your **Fingers of Frost** charges: one charge lights the left wing, and two charges light both wings. An optional accelerating blink warns you during the last five seconds. Open `/fiv` to adjust the display in a small settings window.
 
 [Download the addon](https://github.com/1nd1v1d/Forever_Frost_Alert/releases) · [Report an issue](https://github.com/1nd1v1d/Forever_Frost_Alert/issues) · [Changelog](CHANGELOG.md)
@@ -31,7 +33,7 @@ Built for **WoW Forever 1.60.1**, interface **16001**. Retail, Classic Era, TBC 
 
 ## Installation
 
-1. Download `ForeverFrostAlert-0.3.0-forever.zip` from [Releases](https://github.com/1nd1v1d/Forever_Frost_Alert/releases).
+1. Download `ForeverFrostAlert-0.3.1-forever.zip` from [Releases](https://github.com/1nd1v1d/Forever_Frost_Alert/releases).
 2. Extract the **ForeverIcyVeins** folder into `World of Warcraft/_forever_/Interface/AddOns/`.
 3. Check that `AddOns/ForeverIcyVeins/ForeverIcyVeins.toc` exists.
 4. Restart WoW if the new addon folder is not detected. Enable **Forever Frost Alert** in the addon list.

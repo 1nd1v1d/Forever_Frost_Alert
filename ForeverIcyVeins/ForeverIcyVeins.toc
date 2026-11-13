@@ -1,9 +1,9 @@
 ## Interface: 16001
 ## Title: Forever Frost Alert
-## Notes: Fingers of Frost charge wings with an accelerating expiry warning. WoW Forever only.
-## Notes-deDE: Fluegel fuer Eisige-Finger-Aufladungen mit schneller werdender Ablaufwarnung.
+## Notes: Fingers of Frost charge wings with optional expiry blinking. Code generated exclusively by AI. WoW Forever only.
+## Notes-deDE: Fluegel fuer Eisige-Finger-Aufladungen mit optionalem Blinken. Code ausschliesslich KI-generiert.
 ## Author: 1nd1v1d
-## Version: 0.3.0
+## Version: 0.3.1
 ## X-License: MIT
 ## X-Website: https://github.com/1nd1v1d/Forever_Frost_Alert
 ## Dependencies: Blizzard_AuraContainer, Blizzard_UIPanelTemplates

@@ -2,6 +2,8 @@
 
 **Track your Fingers of Frost charges at a glance.**
 
+**AI disclosure: All project-specific source code was generated exclusively by AI, following the maintainer's instructions.** Documentation and the project icon were also AI-generated. The addon itself does not run an AI model. Blizzard's client code and artwork are separate from this project's generated code.
+
 Forever Frost Alert gives your mage a clear, Retail-style visual cue for **Fingers of Frost** in **World of Warcraft: Forever**. Glowing frost wings show how many charges remain. Open **`/fiv`** to adjust transparency, size and position, and choose whether the wings blink before the buff expires.
 
 ## Charge display
