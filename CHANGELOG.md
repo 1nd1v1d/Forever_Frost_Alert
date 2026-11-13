@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.3.0 - 2026-11-13
+
+- Adds a small, movable settings window opened with `/fiv` or `/fiv options`.
+- Adds a checkbox to disable the five-second expiry blink. Charge indicators remain active when blinking is off.
+- Adds transparency (0–100%), size and horizontal/vertical position sliders, with preview and reset buttons.
+- Saves all settings per character; preserves existing layouts and enables blinking by default for upgrades.
+- Adds `/fiv blink on`, `/fiv blink off` and `/fiv help`; expands `/fiv alpha` to the full 0–1 opacity range.
+- Closes the menu at combat start and prevents settings changes in combat.
+- Adds automated coverage for menu interaction, persistent blink preferences, full transparency and combat protection.
+
+The menu and native binding changes need live-client verification.
+
 ## 0.2.0 - 2026-11-12
 
 - Shows the left frost wing for the first Fingers of Frost charge and the right wing for the second.

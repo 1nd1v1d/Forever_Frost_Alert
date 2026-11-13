@@ -6,7 +6,7 @@
 
 **A focused Fingers of Frost proc alert for World of Warcraft: Forever.**
 
-Glowing frost wings show your **Fingers of Frost** charges: one charge lights the left wing, and two charges light both wings. During the last five seconds, the visible wings blink progressively faster as the buff approaches expiry.
+Glowing frost wings show your **Fingers of Frost** charges: one charge lights the left wing, and two charges light both wings. An optional accelerating blink warns you during the last five seconds. Open `/fiv` to adjust the display in a small settings window.
 
 [Download the addon](https://github.com/1nd1v1d/Forever_Frost_Alert/releases) · [Report an issue](https://github.com/1nd1v1d/Forever_Frost_Alert/issues) · [Changelog](CHANGELOG.md)
 
@@ -14,9 +14,9 @@ Glowing frost wings show your **Fingers of Frost** charges: one charge lights th
 
 - Tracks the **Fingers of Frost** buff, spell ID **400670**.
 - Shows the left wing for one charge and adds the right wing for the second charge.
-- Starts blinking at five seconds remaining, accelerating from about 1 to 4 flashes per second.
+- Optional blinking at five seconds remaining, accelerating from about 1 to 4 flashes per second; enabled by default.
 - Uses a native Blizzard aura container to control visibility.
-- Adjustable scale, opacity and position, saved per character.
+- Settings window with a blink checkbox, 0–100% transparency, size and position sliders; saved per character.
 - Five-second preview that ends automatically when combat starts.
 - Click-through display with no additional addon dependencies.
 - English chat feedback, with German feedback on German clients.
@@ -27,15 +27,15 @@ This addon tracks the **Fingers of Frost proc and its remaining charges**. Charg
 
 Built for **WoW Forever 1.60.1**, interface **16001**. Retail, Classic Era, TBC and MoP clients are not supported.
 
-**Public beta:** the new charge display and accelerating expiry warning still need live-client verification. Automated tests validate Lua behavior, blink timing and the native API configuration but do not replace an in-game test. Please report any issue with the exact client build and `/fiv status` output.
+**Public beta:** the new settings window and native display changes still need live-client verification. Automated tests validate Lua behavior, menu controls, persistence, blink timing and the native API configuration but do not replace an in-game test. Please report any issue with the exact client build and `/fiv status` output.
 
 ## Installation
 
-1. Download `ForeverFrostAlert-0.2.0-forever.zip` from [Releases](https://github.com/1nd1v1d/Forever_Frost_Alert/releases).
+1. Download `ForeverFrostAlert-0.3.0-forever.zip` from [Releases](https://github.com/1nd1v1d/Forever_Frost_Alert/releases).
 2. Extract the **ForeverIcyVeins** folder into `World of Warcraft/_forever_/Interface/AddOns/`.
 3. Check that `AddOns/ForeverIcyVeins/ForeverIcyVeins.toc` exists.
 4. Restart WoW if the new addon folder is not detected. Enable **Forever Frost Alert** in the addon list.
-5. On a mage, type `/fiv test` outside combat to preview the effect.
+5. On a mage, type `/fiv` outside combat to open settings. Use **Preview** to see your current settings.
 
 The folder keeps its original internal name for compatibility with earlier versions. Do not rename it. Existing settings and the `/fiv` command are preserved. Use the packaged release ZIP rather than GitHub's automatically generated source archive.
 
@@ -43,17 +43,19 @@ The folder keeps its original internal name for compatibility with earlier versi
 
 | Command | Purpose |
 | --- | --- |
-| `/fiv` | Show command help |
-| `/fiv test` | Preview blinking for five seconds, starting with two charges and then showing one |
+| `/fiv` or `/fiv options` | Open the settings window |
+| `/fiv help` | Show command help |
+| `/fiv test` | Preview your settings for five seconds, starting with two charges and then showing one |
+| `/fiv blink off` or `/fiv blink on` | Disable or enable the expiry blink |
 | `/fiv scale 1.2` | Set scale, from 0.5 to 2; default 1 |
-| `/fiv alpha 0.8` | Set opacity, from 0.15 to 1; default 0.9 |
+| `/fiv alpha 0.8` | Set opacity, from 0 (invisible) to 1 (opaque); default 0.9 |
 | `/fiv pos 0 -50` | Move the alert relative to screen center; positive X is right, positive Y is up |
 | `/fiv reset` | Restore the default layout and buff ID |
 | `/fiv status` | Print the version, layout and tracked buff ID |
 | `/fiv spell ID` | Override the buff ID for troubleshooting |
 | `/fiv spell auto` | Restore Fingers of Frost, ID 400670 |
 
-Preview and setting changes are available outside combat. `/fiv status` can also be used in combat.
+Preview and setting changes are available outside combat. The settings window closes when combat starts; `/fiv status` can also be used in combat. The menu's **Transparency** slider uses the inverse of opacity: 0% is fully visible, 100% is invisible. Turning blinking off keeps the remaining-charge wings steady until the buff is consumed or expires. Existing layout settings are preserved on update.
 
 ## Troubleshooting
 

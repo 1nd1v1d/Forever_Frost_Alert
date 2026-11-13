@@ -1,9 +1,9 @@
 {
   "name": "Forever Frost Alert",
   "suggestedSlug": "forever-frost-alert",
-  "summary": "Track Fingers of Frost charges with glowing frost wings and an accelerating five-second expiry warning in WoW Forever.",
+  "summary": "Fingers of Frost charge wings for WoW Forever, with optional blinking and a settings menu for transparency, size and position.",
   "githubRepository": "https://github.com/1nd1v1d/Forever_Frost_Alert",
-  "githubDescription": "Fingers of Frost charge wings for WoW Forever, with adjustable placement and an accelerating five-second expiry warning.",
+  "githubDescription": "Fingers of Frost charge wings for WoW Forever, with optional expiry blinking and a settings menu for transparency, size and position.",
   "sourceUrl": "https://github.com/1nd1v1d/Forever_Frost_Alert",
   "issuesUrl": "https://github.com/1nd1v1d/Forever_Frost_Alert/issues",
   "websiteUrl": "https://github.com/1nd1v1d/Forever_Frost_Alert#readme",
@@ -15,11 +15,11 @@
   "gameFlavor": "Forever",
   "gameVersion": "1.60.1",
   "interfaceVersion": 16001,
-  "version": "0.2.0",
+  "version": "0.3.0",
   "releaseType": "Beta",
-  "fileDisplayName": "Forever Frost Alert 0.2.0 - Forever (Beta)",
-  "uploadFile": "dist/ForeverFrostAlert-0.2.0-forever.zip",
-  "checksumFile": "dist/ForeverFrostAlert-0.2.0-forever.zip.sha256",
+  "fileDisplayName": "Forever Frost Alert 0.3.0 - Forever (Beta)",
+  "uploadFile": "dist/ForeverFrostAlert-0.3.0-forever.zip",
+  "checksumFile": "dist/ForeverFrostAlert-0.3.0-forever.zip.sha256",
   "addonFolder": "ForeverIcyVeins",
   "projectIcon": "assets/branding/icon.png",
   "iconFormat": "PNG",
@@ -27,12 +27,12 @@
   "descriptionFile": "docs/publication/CURSEFORGE_DESCRIPTION.md",
   "changelogFile": "docs/publication/RELEASE_NOTES.md",
   "requiredCurseForgeDependencies": [],
-  "builtinGameDependency": "Blizzard_AuraContainer",
+  "builtinGameDependencies": ["Blizzard_AuraContainer", "Blizzard_UIPanelTemplates"],
   "recommendedSettings": {
     "allowComments": true,
     "experimental": false,
     "allowThirdPartyDistribution": true
   },
-  "curseForgeProjectId": null,
-  "curseForgeProjectUrl": null
+  "curseForgeProjectId": 1796931,
+  "curseForgeProjectUrl": "https://www.curseforge.com/wow/addons/forever-frost-alert"
 }

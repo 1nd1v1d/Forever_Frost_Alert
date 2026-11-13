@@ -16,6 +16,7 @@ frames, timers, messages, bindings = {}, {}, {}, {}
 now = 100
 combat, playerClass, nativeAvailable, locale = false, "MAGE", true, "deDE"
 SlashCmdList = {}
+UISpecialFrames = {}
 function print(message) table.insert(messages, message) end
 function UnitClass() return "Mage", playerClass end
 function GetLocale() return locale end
@@ -87,10 +88,39 @@ function methods:EnableMouse(...) write(self, "mouse", ...) end
 function methods:SetTexture(...) write(self, "texture", ...) end
 function methods:SetTexCoord(...) write(self, "texcoord", ...) end
 function methods:SetBlendMode(...) write(self, "blend", ...) end
+function methods:SetHeight(...) write(self, "height", ...) end
+function methods:SetColorTexture(...) write(self, "color", ...) end
+function methods:SetOrientation(...) write(self, "orientation", ...) end
+function methods:SetThumbTexture(texture)
+    self.thumb = setmetatable({ texture = texture }, { __index = methods })
+end
+function methods:GetThumbTexture() return self.thumb end
 function methods:SetWordWrap(...) write(self, "wordWrap", ...) end
 function methods:SetJustifyH(...) write(self, "justifyH", ...) end
 function methods:SetJustifyV(...) write(self, "justifyV", ...) end
-function methods:Show() write(self, "shown", true) end
+function methods:SetText(...) write(self, "textValue", ...) end
+function methods:SetClampedToScreen(...) write(self, "clamped", ...) end
+function methods:SetMovable(...) write(self, "movable", ...) end
+function methods:RegisterForDrag(...) write(self, "dragButtons", ...) end
+function methods:StartMoving() self.moving = true end
+function methods:StopMovingOrSizing() self.moving = false end
+function methods:SetChecked(value) self.checked = value end
+function methods:GetChecked() return self.checked end
+function methods:SetMinMaxValues(minimum, maximum) self.minimum, self.maximum = minimum, maximum end
+function methods:SetValueStep(step) self.step = step end
+function methods:SetObeyStepOnDrag(value) self.obeyStep = value end
+function methods:SetValue(value)
+    self.value = math.min(self.maximum, math.max(self.minimum, value))
+    if self.scripts and self.scripts.OnValueChanged then self.scripts.OnValueChanged(self, self.value) end
+end
+function methods:Click()
+    if self.kind == "CheckButton" then self.checked = not self.checked end
+    self.scripts.OnClick(self)
+end
+function methods:Show()
+    write(self, "shown", true)
+    if self.scripts and self.scripts.OnShow then self.scripts.OnShow(self) end
+end
 function methods:Hide() write(self, "shown", false) end
 function methods:CreateTexture(_, layer)
     assert(not self.restricted, "Creating a texture after native initialization")
@@ -100,7 +130,7 @@ function methods:CreateTexture(_, layer)
 end
 function methods:CreateFontString(_, layer, template)
     assert(not self.restricted)
-    assert(template == "GameFontNormal")
+    assert(template == "GameFontNormal" or template == "GameFontHighlightSmall")
     local font = setmetatable({ parent = self, layer = layer }, { __index = methods })
     table.insert(self.fontStrings, font)
     return font
@@ -110,15 +140,18 @@ function methods:SetApplicationBar(bar, options)
     self.applicationBar, self.applicationOptions = bar, options
 end
 function methods:SetDurationText(font, options)
-    assert(not self.restricted and font.parent.parent == self)
+    assert((not self.restricted or not combat) and font.parent.parent == self)
     self.durationBinding = options.binding:Copy()
     self.durationBinding:SetFontString(font)
 end
 function methods:RegisterEvent(event) self.events[event] = true end
 function methods:UnregisterEvent(event) self.events[event] = nil end
 function methods:SetScript(kind, callback)
-    assert(kind == "OnEvent", "Unexpected addon script: " .. kind)
-    self.callback = callback
+    assert(kind == "OnEvent" or kind == "OnShow" or kind == "OnClick" or kind == "OnValueChanged"
+        or kind == "OnDragStart" or kind == "OnDragStop", "Unexpected addon script: " .. kind)
+    self.scripts = self.scripts or {}
+    self.scripts[kind] = callback
+    if kind == "OnEvent" then self.callback = callback end
 end
 function methods:SetUnit(unit)
     assert(unit == "player", "Must only track the player")
@@ -166,6 +199,9 @@ function CreateFrame(kind, name, parent, template)
         textures = {}, fontStrings = {}, events = {}, shown = {true},
     }, { __index = methods })
     table.insert(frames, frame)
+    if template == "BasicFrameTemplateWithInset" then
+        frame.TitleText = setmetatable({}, { __index = methods })
+    end
     if name then _G[name] = frame end
     return frame
 end
@@ -351,7 +387,85 @@ class AddonTests(unittest.TestCase):
             assert(ForeverIcyVeinsDB.x == -1500)
             assert(ForeverIcyVeinsDB.spellID == nil)
             Command("scale 100"); assert(ForeverIcyVeinsDB.scale == 2)
-            Command("alpha -10"); assert(ForeverIcyVeinsDB.alpha == 0.15)
+            Command("alpha -10"); assert(ForeverIcyVeinsDB.alpha == 0)
+        ''')
+
+    def test_blink_can_be_disabled_and_reenabled_without_changing_charges(self):
+        lua = client()
+        lua.execute('''
+            assert(ForeverIcyVeinsDB.blink == true)
+            Command("blink off")
+            assert(ForeverIcyVeinsDB.blink == false)
+            for _, slot in pairs(nativeContainer.slots) do
+                local formatter = slot.button.durationBinding.formatter
+                for tick = 1, 500 do assert(formatter:FormatNumber(tick / 100) ~= "") end
+            end
+            NativeAura(1, 4.5)
+            assert(WingVisible("FingersOfFrostLeft") and not WingVisible("FingersOfFrostRight"))
+            Command("blink on")
+            NativeAura(2, 4.5)
+            assert(not WingVisible("FingersOfFrostLeft") and not WingVisible("FingersOfFrostRight"))
+            Command("blink invalid")
+            assert(ForeverIcyVeinsDB.blink == true)
+            combat = true; Command("blink off")
+            assert(ForeverIcyVeinsDB.blink == true)
+        ''')
+
+    def test_blink_and_full_transparency_persist_on_reload(self):
+        lua = client()
+        lua.execute('Command("blink off"); Command("alpha 0")')
+        reloaded = client(saved=dict(lua.globals().ForeverIcyVeinsDB.items()))
+        reloaded.execute('''
+            assert(ForeverIcyVeinsDB.blink == false)
+            assert(ForeverIcyVeinsFrame.alpha[1] == 0)
+            local formatter = nativeContainer.slots.FingersOfFrostLeft.button.durationBinding.formatter
+            assert(formatter:FormatNumber(4.5) ~= "")
+            Command("options")
+            assert(ForeverFrostAlertOptions.parent == UIParent, "Hidden wings must not hide the menu")
+            assert(ForeverFrostAlertOptions.controls[1].slider.value == 100)
+            Command("reset")
+            assert(ForeverIcyVeinsDB.blink and ForeverIcyVeinsDB.alpha == 0.9)
+            assert(ForeverFrostAlertOptions.blink.checked == true)
+        ''')
+
+    def test_options_menu_controls_apply_save_and_preview(self):
+        lua = client()
+        lua.execute('''
+            Command("")
+            local menu = ForeverFrostAlertOptions
+            assert(menu.shown[1] and UISpecialFrames[1] == "ForeverFrostAlertOptions")
+            assert(menu.blink.checked == true)
+            menu.blink:Click()
+            assert(ForeverIcyVeinsDB.blink == false)
+            menu.controls[1].slider:SetValue(75)
+            assert(ForeverIcyVeinsDB.alpha == 0.25 and ForeverIcyVeinsFrame.alpha[1] == 0.25)
+            menu.controls[2].slider:SetValue(125)
+            menu.controls[3].slider:SetValue(200)
+            menu.controls[4].slider:SetValue(-40)
+            assert(ForeverIcyVeinsDB.scale == 1.25 and ForeverIcyVeinsDB.x == 200 and ForeverIcyVeinsDB.y == -40)
+            menu.preview:Click()
+            assert(#timers == 2 and not nativeContainer.shown[1])
+            menu.reset:Click()
+            assert(ForeverIcyVeinsDB.scale == 1 and ForeverIcyVeinsDB.x == 0 and ForeverIcyVeinsDB.blink)
+            assert(menu.controls[1].slider.value == 10)
+            menu.close:Click()
+            assert(not menu.shown[1])
+            Command("options"); assert(menu.shown[1])
+        ''')
+
+    def test_combat_closes_menu_and_blocks_widget_changes(self):
+        lua = client()
+        lua.execute('''
+            Command("options")
+            local menu = ForeverFrostAlertOptions
+            combat = true; Fire("PLAYER_REGEN_DISABLED")
+            assert(not menu.shown[1])
+            menu.controls[1].slider:SetValue(100)
+            menu.blink:Click()
+            menu.reset:Click(); menu.preview:Click()
+            assert(ForeverIcyVeinsDB.alpha == 0.9 and ForeverIcyVeinsDB.blink == true)
+            assert(#timers == 0)
+            Command("options"); assert(not menu.shown[1])
         ''')
 
     def test_reset_and_auto_restore_filters(self):

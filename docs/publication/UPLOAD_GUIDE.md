@@ -9,7 +9,7 @@ The GitHub repository is public; creating/submitting the CurseForge project is a
 | --- | --- |
 | Name | **Forever Frost Alert** |
 | Suggested slug | `forever-frost-alert` — subject to availability |
-| Summary | Track Fingers of Frost charges with glowing frost wings and an accelerating five-second expiry warning in WoW Forever. |
+| Summary | Fingers of Frost charge wings for WoW Forever, with optional blinking and a settings menu for transparency, size and position. |
 | Logo | `assets/branding/icon.png` — original square PNG, 1254 × 1254 pixels |
 | Description | Paste `docs/publication/CURSEFORGE_DESCRIPTION.md` in Markdown mode |
 | Game | World of Warcraft |
@@ -20,14 +20,16 @@ The GitHub repository is public; creating/submitting the CurseForge project is a
 | Source | https://github.com/1nd1v1d/Forever_Frost_Alert |
 | Issues | https://github.com/1nd1v1d/Forever_Frost_Alert/issues |
 | Website | https://github.com/1nd1v1d/Forever_Frost_Alert#readme |
-| Upload | `dist/ForeverFrostAlert-0.2.0-forever.zip` |
-| File display name | Forever Frost Alert 0.2.0 - Forever (Beta) |
+| Upload | `dist/ForeverFrostAlert-0.3.0-forever.zip` |
+| File display name | Forever Frost Alert 0.3.0 - Forever (Beta) |
 | File type | **Beta** |
 | Flavor / supported version | **Forever / 1.60.1** only |
 | Changelog | Paste `docs/publication/RELEASE_NOTES.md` |
 | Required CurseForge dependencies | None |
 
-`Blizzard_AuraContainer` is a game component and must not be added as a CurseForge project dependency. The ZIP contains the `ForeverIcyVeins` folder with the TOC, Lua source, license and notices. Do not upload GitHub's source ZIP, the publication kit or a backup folder as the addon download.
+`Blizzard_AuraContainer` and `Blizzard_UIPanelTemplates` are game components and must not be added as CurseForge project dependencies. The ZIP contains the `ForeverIcyVeins` folder with the TOC, Lua source, license and notices. Do not upload GitHub's source ZIP, the publication kit or a backup folder as the addon download.
+
+The existing CurseForge project is [Forever Frost Alert](https://www.curseforge.com/wow/addons/forever-frost-alert), project ID **1796931**. Upload this update to that project and replace its description with the prepared text; a second project is not needed.
 
 ## Submit the project
 
@@ -52,8 +54,11 @@ The initial Beta deliberately does not claim full live validation. CurseForge's 
 - Let the buff expire; check the alert disappears.
 - Reload with the buff active; verify the native display reconnects.
 - Verify scale, position and opacity survive relogging.
+- Open `/fiv`, disable blinking and verify the charge wings remain steady in the last five seconds.
+- Move the transparency slider, including both endpoints, and verify the menu remains visible even when the wings are fully transparent.
+- Confirm that the blink preference and transparency survive relogging; check Preview and Reset.
 
-The new rendering path, charge display and expiry warning are not yet verified in the live client. The logo is branding only. A real in-game screenshot of the effect would be a useful optional gallery image; label a `/fiv test` capture as a preview. No gameplay screenshot is supplied or fabricated.
+The new menu and native binding changes are not yet verified in the live client. The logo is branding only. A real in-game screenshot of the effect would be a useful optional gallery image; label a `/fiv test` capture as a preview. No gameplay screenshot is supplied or fabricated.
 
 ## Future releases
 

@@ -2,7 +2,7 @@
 
 **Track your Fingers of Frost charges at a glance.**
 
-Forever Frost Alert gives your mage a clear, Retail-style visual cue for **Fingers of Frost** in **World of Warcraft: Forever**. Glowing frost wings show how many charges remain, and an accelerating blink warns you when the buff is about to expire.
+Forever Frost Alert gives your mage a clear, Retail-style visual cue for **Fingers of Frost** in **World of Warcraft: Forever**. Glowing frost wings show how many charges remain. Use the settings menu to adjust their transparency, size and position, and choose whether to enable the accelerating expiry blink.
 
 ## Charge display
 
@@ -16,13 +16,26 @@ When you spend a charge, the right wing disappears first. The left wing stays un
 
 ## Expiry warning
 
-The wings remain steady while more than five seconds remain. During the **last five seconds**, the visible wings begin blinking, accelerating from approximately **one to four flashes per second** as time runs out.
+With blinking enabled, the wings remain steady while more than five seconds remain. During the **last five seconds**, the visible wings begin blinking, accelerating from approximately **one to four flashes per second** as time runs out.
 
 The warning follows the buff's actual remaining duration. If a new proc refreshes the buff to more than five seconds, the wings become steady again. Consuming the buff or letting it expire clears the alert.
 
+**Prefer a steady display?** Open `/fiv` and uncheck **Blink during the last 5 seconds**. The wings will still show your remaining charges, without blinking. The preference is saved per character.
+
+## Settings menu
+
+Type **`/fiv`** or **`/fiv options`** outside combat to open the movable settings window:
+
+- Enable or disable the expiry blink.
+- Set **transparency from 0% to 100%**: 0% is fully visible, 100% is invisible.
+- Adjust size and horizontal/vertical position with sliders.
+- Preview your current settings or restore defaults.
+
+Changes are saved immediately per character. The menu closes when combat starts. Existing layout settings are preserved on update; blinking remains enabled by default until you turn it off.
+
 ## What it does
 
-- Lets you adjust the size, opacity and position.
+- Includes an in-game menu for blinking, transparency, size and position.
 - Saves your settings per character.
 - Includes a five-second preview that demonstrates two charges, one charge and the accelerating blink. The preview ends when combat begins.
 - Allows mouse clicks through the display.
@@ -33,13 +46,13 @@ The warning follows the buff's actual remaining duration. If a new proc refreshe
 
 **WoW Forever 1.60.1 only — interface 16001.**
 
-This addon tracks the **Fingers of Frost proc and its remaining charges** on your mage. The wings indicate charges, and blinking warns you that the proc is about to expire. There is no timer, numeric counter or rotation helper.
+This addon tracks the **Fingers of Frost proc and its remaining charges** on your mage. The wings indicate charges, with an optional expiry warning. There is no timer, numeric counter or rotation helper.
 
-**Public beta:** the new charge display and accelerating expiry warning still need live-client verification. Please report problems with your exact client build and the output of `/fiv status`.
+**Public beta:** the new settings window and native display changes still need live-client verification. Please report problems with your exact client build and the output of `/fiv status`.
 
 ## Getting started
 
-Install the Forever file, enable **Forever Frost Alert** and log in on your mage. Type `/fiv test` outside combat to see a preview.
+Install the Forever file, enable **Forever Frost Alert** and log in on your mage. Type `/fiv` outside combat to open settings, then click **Preview**.
 
 For manual installation, extract the **ForeverIcyVeins** folder into:
 
@@ -53,10 +66,12 @@ The folder keeps its original name for compatibility. Do not rename it. Restart 
 
 | Command | What it does |
 | --- | --- |
-| `/fiv` | Show help |
-| `/fiv test` | Preview two charges, then one, with accelerating blinking over five seconds |
+| `/fiv` or `/fiv options` | Open settings |
+| `/fiv help` | Show command help |
+| `/fiv test` | Preview two charges, then one, using your current settings |
+| `/fiv blink off` / `/fiv blink on` | Disable / enable the expiry blink |
 | `/fiv scale 1.2` | Change size; range 0.5–2 |
-| `/fiv alpha 0.8` | Change opacity; range 0.15–1 |
+| `/fiv alpha 0.8` | Change opacity; range 0–1 |
 | `/fiv pos 0 -50` | Move relative to screen center; positive X moves right, positive Y moves up |
 | `/fiv reset` | Restore defaults |
 | `/fiv status` | Show the installed version and settings |

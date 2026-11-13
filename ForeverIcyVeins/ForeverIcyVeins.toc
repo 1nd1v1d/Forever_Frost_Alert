@@ -3,10 +3,10 @@
 ## Notes: Fingers of Frost charge wings with an accelerating expiry warning. WoW Forever only.
 ## Notes-deDE: Fluegel fuer Eisige-Finger-Aufladungen mit schneller werdender Ablaufwarnung.
 ## Author: 1nd1v1d
-## Version: 0.2.0
+## Version: 0.3.0
 ## X-License: MIT
 ## X-Website: https://github.com/1nd1v1d/Forever_Frost_Alert
-## Dependencies: Blizzard_AuraContainer
+## Dependencies: Blizzard_AuraContainer, Blizzard_UIPanelTemplates
 ## SavedVariablesPerCharacter: ForeverIcyVeinsDB
 
 ForeverIcyVeins.lua
