@@ -1,7 +1,7 @@
 # CurseForge upload guide
 
-All project copy is in English. The project is prepared as an initial **Beta**.
-The GitHub repository is public; creating/submitting the CurseForge project is a separate step.
+All project copy is in English. The current addon version is a **Beta**.
+The GitHub repository and CurseForge project are public. GitHub release uploads can be automated after adding the author token; see the [API setup instructions in German](CURSEFORGE_API_SETUP_DE.md).
 
 ## Files to use
 
@@ -31,16 +31,16 @@ The GitHub repository is public; creating/submitting the CurseForge project is a
 
 The existing CurseForge project is [Forever Frost Alert](https://www.curseforge.com/wow/addons/forever-frost-alert), project ID **1796931**. Upload this update to that project and replace its description with the prepared text; a second project is not needed.
 
-## Submit the project
+## Update the existing project manually
 
-1. Sign into the [CurseForge author portal](https://authors.curseforge.com/#/projects/create/choose-game).
-2. Select World of Warcraft and fill in the project fields above.
-3. Upload the original PNG logo. Paste the English project description and choose MIT License.
+1. Sign into the [CurseForge author portal](https://authors.curseforge.com/) and open the existing **Forever Frost Alert** project, ID **1796931**.
+2. Check the project fields above.
+3. Upload the original PNG logo if needed. Paste the English project description and choose MIT License.
 4. Enable comments, leave Experimental off, and allow third-party distribution if you want other addon managers to access the file. These are recommended preferences, not mandatory fields.
-5. Create the project. Set its Source, Issues and Website links where available.
+5. Set its Source, Issues and Website links where available.
 6. Upload the installable ZIP. Select **Forever**, **1.60.1**, **Beta**, and paste the release notes. Choose your desired publication timing in the release options.
 7. Submit the project/file for moderation. Watch the author dashboard for approval or requested changes; approval is controlled by CurseForge.
-8. Record the assigned project ID and real CurseForge URL in `project-metadata.json`. Add the real URL to the README; do not use the suggested slug as if it were an approved page.
+8. Check the public project page after approval.
 
 The initial Beta deliberately does not claim full live validation. CurseForge's guidance says a project needs at least one **Release** file before it syncs to the app. After the live checks below pass, a regular Release can be uploaded. Do not relabel the beta as validated merely to gain app visibility.
 
@@ -67,9 +67,12 @@ Update the version in the TOC and Lua status string, changelog, release notes an
 ```sh
 python scripts/build.py
 python tests/run_tests.py
+python -m unittest discover -s tests -p 'test_curseforge_upload.py'
 ```
 
-Commit and push the reviewed files. Create a version tag and a GitHub release with the installable ZIP and `.sha256` asset. Upload that same ZIP to CurseForge with the matching client flavor, version, release type and changelog. Automated CurseForge publishing is not configured; no API token or project ID has been invented.
+Commit and push the reviewed files. Create a matching version tag and publish a GitHub release with the installable ZIP and `.sha256` asset. The **Publish to CurseForge** workflow rebuilds and tests that tag, then uploads it to project **1796931** using the repository secret **CF_API_TOKEN**. GitHub pre-releases become CurseForge Beta files; regular releases become Release files. An upload receipt attached to the GitHub release prevents duplicate workflow uploads.
+
+Follow the [API setup instructions](CURSEFORGE_API_SETUP_DE.md) to create the token, store it and run a dry run. Existing releases can be processed with `workflow_dispatch`; dry-run mode is enabled by default. A missing token stops a real upload with a clear error. The upload API sends the file and its changelog; project description, icon and categories still need the author portal. Manual upload remains available as described above, but do not upload the same version both manually and through the workflow.
 
 ## Official references
 
@@ -77,3 +80,4 @@ Requirements were checked on 2026-11-10:
 
 - [Project Submission Guide and Tips](https://support.curseforge.com/support/solutions/articles/9000199552-project-submission-guide-and-tips): distinct name, original square PNG logo of at least 400 × 400 pixels, summary, categories, description and license.
 - [Creating and Submitting a Project](https://support.curseforge.com/support/solutions/articles/9000197241): English titles/descriptions, ZIP upload, release type, supported versions and moderation.
+- [Upload API](https://support.curseforge.com/support/solutions/articles/9000197321-curseforge-upload-api): author tokens, multipart file upload and supported game-version names (checked on 2026-11-13).

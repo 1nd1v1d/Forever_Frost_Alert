@@ -19,7 +19,7 @@ Glowing frost wings show your **Fingers of Frost** charges: one charge lights th
 - Settings window with a blink checkbox, 0–100% transparency, size and position sliders; saved per character.
 - Five-second preview that ends automatically when combat starts.
 - Click-through display with no additional addon dependencies.
-- English chat feedback, with German feedback on German clients.
+- Menu and chat automatically use the WoW client's language: German or English, with English as the fallback for other languages.
 
 This addon tracks the **Fingers of Frost proc and its remaining charges**. Charges are represented by the wings; there is no numeric counter, timer or rotation recommendation.
 
@@ -75,9 +75,12 @@ Use Python 3.11+ and the test-only dependency in `requirements-dev.txt`:
 python -m pip install -r requirements-dev.txt
 python scripts/build.py
 python tests/run_tests.py
+python -m unittest discover -s tests -p 'test_curseforge_upload.py'
 ```
 
-The build creates an installable ZIP and its SHA-256 checksum in `dist/`. The tests run the addon under Lua 5.1 with a restricted WoW API test double. GitHub Actions runs the same checks.
+The build creates an installable ZIP and its SHA-256 checksum in `dist/`. The tests run the addon under Lua 5.1 with a restricted WoW API test double. Publisher tests use mocked HTTP and never need a real token. GitHub Actions runs the same checks.
+
+Publishing a GitHub release triggers the **Publish to CurseForge** workflow. It builds and tests the tagged addon before uploading to CurseForge; pre-releases are uploaded as Beta files. Configure the repository secret `CF_API_TOKEN` once using the [step-by-step API setup guide (German)](docs/publication/CURSEFORGE_API_SETUP_DE.md). A manual dry run is available for existing releases. This automation publishes files and changelogs; project descriptions remain managed in the CurseForge author portal.
 
 [Publishing guide](docs/publication/UPLOAD_GUIDE.md) · [CurseForge description](docs/publication/CURSEFORGE_DESCRIPTION.md) · [Project metadata](docs/publication/project-metadata.json)
 

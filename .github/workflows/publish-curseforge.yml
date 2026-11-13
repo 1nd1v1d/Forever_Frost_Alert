@@ -1,0 +1,79 @@
+name: Publish to CurseForge
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: 'Existing published GitHub release tag (for example v0.3.0)'
+        required: true
+        type: string
+      dry_run:
+        description: 'Validate and test only; do not upload to CurseForge'
+        type: boolean
+        default: true
+
+permissions:
+  contents: write # Attach a non-secret upload receipt to the GitHub release.
+
+concurrency:
+  group: curseforge-${{ github.event.release.tag_name || inputs.release_tag }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      RELEASE_TAG: ${{ github.event.release.tag_name || inputs.release_tag }}
+      DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run }}
+    steps:
+      # The publisher stays on main so old releases can be uploaded manually,
+      # even if their tags predate this workflow and script.
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          ref: main
+          persist-credentials: false
+      - name: Read the published release and any previous upload receipt
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python -c 'import os,re; assert re.fullmatch(r"v\d+\.\d+\.\d+(?:-[A-Za-z0-9.-]+)?", os.environ["RELEASE_TAG"]), "Invalid release tag"'
+          mkdir -p .publish
+          gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --json tagName,isDraft,isPrerelease,body,assets > .publish/release.json
+          if jq -e '.assets | any(.name == "curseforge-upload.json")' .publish/release.json > /dev/null; then
+            gh release download "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --pattern curseforge-upload.json --dir .publish
+          fi
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          ref: ${{ env.RELEASE_TAG }}
+          path: release-source
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.11'
+          cache: pip
+          cache-dependency-path: release-source/requirements-dev.txt
+      - run: python -m pip install -r release-source/requirements-dev.txt
+      - name: Test the publisher
+        run: python -m unittest discover -s tests -p 'test_curseforge_upload.py'
+      - name: Build and test the tagged addon
+        working-directory: release-source
+        run: |
+          python scripts/build.py
+          python tests/run_tests.py
+      - name: Upload or validate the CurseForge package
+        env:
+          CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+        run: |
+          flags=()
+          if [ "$DRY_RUN" = "true" ]; then flags+=(--dry-run); fi
+          python scripts/upload_curseforge.py --root release-source --release-json .publish/release.json --receipt .publish/new/curseforge-upload.json --existing-receipt .publish/curseforge-upload.json "${flags[@]}"
+      - name: Save the upload receipt
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ -f .publish/new/curseforge-upload.json ]; then
+            gh release upload "$RELEASE_TAG" .publish/new/curseforge-upload.json --repo "$GITHUB_REPOSITORY"
+          fi

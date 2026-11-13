@@ -519,6 +519,22 @@ class AddonTests(unittest.TestCase):
             assert(messages[3]:find("outside combat", 1, true))
         ''')
 
+    def test_menu_uses_client_language_with_english_fallback(self):
+        for locale, preview, reset, close, transparency in [
+            ("deDE", "Vorschau", "Zuruecksetzen", "Schliessen", "Transparenz: 10%"),
+            ("enUS", "Preview", "Reset", "Close", "Transparency: 10%"),
+            ("enGB", "Preview", "Reset", "Close", "Transparency: 10%"),
+            ("frFR", "Preview", "Reset", "Close", "Transparency: 10%"),
+        ]:
+            with self.subTest(locale=locale):
+                lua = client(f'locale = "{locale}"')
+                lua.execute('Command("options")')
+                menu = lua.globals().ForeverFrostAlertOptions
+                self.assertEqual(menu.preview.textValue[1], preview)
+                self.assertEqual(menu.reset.textValue[1], reset)
+                self.assertEqual(menu.close.textValue[1], close)
+                self.assertEqual(menu.controls[1].text.textValue[1], transparency)
+
     def test_only_initializes_for_own_addon_once(self):
         lua = client()
         lua.execute('''
